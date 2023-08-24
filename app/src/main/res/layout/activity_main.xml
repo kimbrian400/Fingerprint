@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/background_dark">
+
+    <!-- Fingerprint Icon -->
+    <ImageView
+        android:id="@+id/fingerprintIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_fingerprint"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp"/>
+
+    <!-- Unlock Text -->
+    <TextView
+        android:id="@+id/unlockText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Touch to Unlock"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:layout_below="@id/fingerprintIcon"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"/>
+
+    <!-- Animation View -->
+    <ImageView
+        android:id="@+id/animationView"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_below="@id/unlockText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:visibility="invisible"
+        android:src="@drawable/fingerprint_animation"/>
+
+</RelativeLayout>
