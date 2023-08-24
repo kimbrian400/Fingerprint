@@ -1,11 +1,12 @@
 package com.kimbrian.fingerprint;
 
+import android.Manifest;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.hardware.fingerprint.FingerprintManagerCompat;
 
 import android.content.pm.PackageManager;
-import android.hardware.fingerprint.FingerprintManager;
 import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.view.View;
@@ -17,7 +18,7 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private RelativeLayout layout;
+    private static final int REQUEST_BIOMETRIC_PERMISSION = 100;
     private ImageView fingerprintIcon;
     private TextView unlockText;
     private ImageView animationView;
@@ -29,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        layout = findViewById(R.id.layout);
+        RelativeLayout layout = findViewById(R.id.layout);
         fingerprintIcon = findViewById(R.id.fingerprintIcon);
         unlockText = findViewById(R.id.unlockText);
         animationView = findViewById(R.id.animationView);
@@ -37,12 +38,17 @@ public class MainActivity extends AppCompatActivity {
         // Initialize FingerprintManagerCompat
         fingerprintManager = FingerprintManagerCompat.from(this);
 
-        // Check if the device has a fingerprint sensor and if the app has permission
+        // Check for biometric hardware and permission
         if (!fingerprintManager.isHardwareDetected() || ActivityCompat.checkSelfPermission(this, Manifest.permission.USE_BIOMETRIC) != PackageManager.PERMISSION_GRANTED) {
-            // Fingerprint authentication is not available, handle this case accordingly
+            // Biometric authentication is not available, handle this case accordingly
             // You can hide the fingerprint UI and provide an alternative method for authentication
             fingerprintIcon.setVisibility(View.GONE);
-            unlockText.setText("Fingerprint not available");
+            unlockText.setText("Biometric not available");
+        } else {
+            // Request the biometric permission
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.USE_BIOMETRIC) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.USE_BIOMETRIC}, REQUEST_BIOMETRIC_PERMISSION);
+            }
         }
 
         // Set an onClickListener for the fingerprint icon to start the animation and authenticate
@@ -108,4 +114,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_BIOMETRIC_PERMISSION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted, you can proceed with fingerprint authentication
+            } else {
+                // Permission denied, handle this case accordingly
+                fingerprintIcon.setVisibility(View.GONE);
+                unlockText.setText("Permission denied for biometric");
+            }
+        }
+    }
 }
